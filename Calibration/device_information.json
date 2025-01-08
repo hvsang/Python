@@ -1,0 +1,213 @@
+{
+  "fx4": {
+    "channel_number": 4,
+    "units": "io/fx4/adc/channel_1/units.json",
+    "keithley": "io/fx4/calibration/keithley/source_value/value.json",
+    "data": "io/fx4/adc",
+    "range": ["100nA", "1µA", "10µA", "100µA", "1mA", "10mA"],
+    "max_current_range": {
+      "100nA": 100,
+      "1µA": 1,
+      "10µA": 10,
+      "100µA": 100,
+      "1mA": 1,
+      "10mA": 10
+    },
+    "source_keithley": {
+      "100nA": [9e-8, -1e-8, 4.501e-8, -9e-8, 1e-8, -4.567e-8],
+      "1µA": [1e-7, -9e-7, 4.57e-7, -1e-7, 9e-7, -6.55e-7],
+      "10µA": [1e-6, -9e-6, 4.5e-6, -1e-6, 9e-6, -4.53e-6],
+      "100µA": [1e-5, -3.363e-5, 9e-5, -4.577e-5, 7e-5, -1e-5],
+      "1mA": [0.0001, -0.000651, 0.0009, -0.0001, 0.00045, -0.0009],
+      "10mA": [0.001, -0.00553, 0.009, -0.001, 0.0045, -0.009]
+    },
+    "time_set_keithley": 2.4,
+    "time_get_data": 2
+  },
+  "i2": {
+    "channel_number": 2,
+    "units": "io/i2/adc/channel_1/units.json",
+    "keithley": "io/i2/calibration/keithley/source_value/value.json",
+    "data": "io/i2/adc",
+    "range": ["12pF", "87pF", "1000pF"],
+    "intergration_frequency": ["3900Hz", "2000Hz", "1200Hz", "1000Hz", "800Hz", "500Hz"],
+    "max_current_range": {
+      "12pF": {
+        "3900Hz": 195,
+        "2000Hz": 100,
+        "1200Hz": 60,
+        "1000Hz": 50,
+        "800Hz": 40,
+        "500Hz": 25
+      },
+      "87pF": {
+        "2000Hz": 700,
+        "1200Hz": 420,
+        "1000Hz": 350,
+        "800Hz": 280,
+        "500Hz": 175
+      },
+      "1000pF": {
+        "2000Hz": 8000,
+        "1200Hz": 4800,
+        "1000Hz": 4000,
+        "800Hz": 3200,
+        "500Hz": 2000
+      }
+    },
+    "source_keithley": {
+      "12pF": {
+        "3900Hz": [1e-8, 9e-8, 2.192e-8, 9.134e-8, 1.545e-7, 1.745e-7],
+        "2000Hz": [1e-8, 9e-8, 2.192e-8, 7.134e-8, 4.687e-8],
+        "1200Hz": [1e-8, 5.4e-8, 2.789e-8, 1.347e-8, 5.26e-8],
+        "1000Hz": [1e-8, 4.5e-8, 2.257e-8, 1.89e-8, 4.3823e-8],
+        "800Hz": [1e-8, 3.6e-8, 1.817e-8, 3.3919e-8, 2.653e-8],
+        "500Hz": [1e-8, 2.25e-8, 1.125e-8, 2.089e-8, 1.6e-8]
+      },
+      "87pF": {
+        "2000Hz": [7e-8, 6.3e-7, 8.685e-8, 5.183e-7, 3.962e-7],
+        "1200Hz": [4.2e-8, 3.78e-7, 9.379e-8, 1.8633e-7, 3.719e-7],
+        "1000Hz": [3.5e-8, 3.15e-7, 7.888e-8, 3.017e-7, 1.6734e-7],
+        "800Hz": [2.8e-8, 2.52e-7, 6.727e-8, 2.487e-7, 1.2638e-7],
+        "500Hz": [1.75e-8, 1.575e-7, 4.4e-8, 1.5618e-7, 7.867e-8]
+      },
+      "1000pF": {
+        "2000Hz": [8e-7, 7.2e-6, 1.0457e-6, 6.983e-6, 3.771e-6],
+        "1200Hz": [4.8e-7, 4.32e-6, 9.9872e-7, 2.1673e-6, 4.3139e-6],
+        "1000Hz": [4e-7, 3.6e-6, 9.7895e-7, 2.0327e-6, 3.5784e-6],
+        "800Hz": [3.2e-7, 2.88e-6, 8.7315e-7, 1.5674e-6, 2.8776e-6],
+        "500Hz": [2e-7, 1.8e-6, 3.3569e-7, 1.7915e-6, 1.0636e-6]
+      }
+    },
+    "time_set_keithley": 0.9,
+    "time_get_data": 0.9
+  },
+  "ix256": {
+    "base": {
+      "channel_number": 256,
+      "units": "io/ix256/adc/channel_1/units.json",
+      "keithley": "io/ix256/apx2_calibration/keithley/source_value/value.json",
+      "data": "io/ix256/adc",
+      "range": ["3pF", "12pF", "25pF", "37pF", "50pF", "62pF", "75pF", "87pF"],
+      "select_channel": "io/ix256/apx2_calibration/selected_channel/value.json",
+      "max_current_range": {
+        "3pF": 72,
+        "12pF": 300,
+        "25pF": 600,
+        "37pF": 900,
+        "50pF": 1200,
+        "62pF": 1500,
+        "75pF": 1800,
+        "87pF": 2100
+      },
+      "source_keithley": {
+        "3pF": [1e-8, 6.48e-8, 1.91e-8, 6.4273e-8, 3.2655e-8],
+        "12pF": [13.56e-8, 3e-8, 26.346e-8, 11.2695e-8, 27e-8],
+        "25pF": [6e-8, 2.72e-7, 5.37e-7, 6.77e-8, 5.4e-7],
+        "37pF": [9e-8, 3.93e-7, 1.89e-7, 1.01e-7, 8.1e-7],
+        "50pF": [12e-8, 2.8425e-7, 10.692e-7, 5.7495e-7, 10.8e-7],
+        "62pF": [1.5e-7, 6.72e-7, 1.33e-6, 1.671e-7, 1.35e-6],
+        "75pF": [1.8e-7, 9.497e-7, 1.62e-6, 1.901e-7, 1.62e-6],
+        "87pF": [2.1e-7, 8.951e-7, 1.71e-6, 2.156e-7, 1.89e-6]
+      },
+      "time_set_keithley": 1.1,
+      "time_get_data": 1.1
+    },
+    "highcurrent": {
+      "channel_number": 1,
+      "units": "io/ix256/mezzanine/channel_1/units.json",
+      "keithley": "io/ix256/calibration/keithley/source_value/value.json",
+      "data": "io/ix256/mezzanine",
+      "range": ["1µA", "10µA", "100µA", "1mA"],
+      "max_current_range": { "1µA": 1, "10µA": 10, "100µA": 100, "1mA": 1 },
+      "source_keithley": {
+        "1µA": [1e-7, -9e-7, 4.57e-7, -1e-7, 9e-7, -6.55e-7],
+        "10µA": [1e-6, -9e-6, 4.5e-6, -1e-6, 9e-6, -4.53e-6],
+        "100µA": [1e-5, -3.363e-5, 9e-5, -4.577e-5, 7e-5, -1e-5],
+        "1mA": [0.0001, -0.000651, 0.0009, -0.0001, 0.00045, -0.0009]
+      },
+      "time_set_keithley": 0.9,
+      "time_get_data": 0.9
+    }
+  },
+  "i128-micro": {
+    "channel_number": 128,
+    "units": "io/pbx/adc/channel_1/units.json",
+    "keithley": "io/pbx/calibration/keithley/source_value/value.json",
+    "data": "io/pbx/adc",
+    "range": ["3pF", "12pF", "25pF", "37pF", "50pF", "62pF", "75pF", "87pF"],
+    "select_channel": "io/pbx/calibration/selected_channel/value.json",
+    "max_current_range": {
+      "3pF": 48,
+      "12pF": 200,
+      "25pF": 400,
+      "37pF": 600,
+      "50pF": 800,
+      "62pF": 1000,
+      "75pF": 1200,
+      "87pF": 1400
+    },
+    "source_keithley": {
+      "3pF": [1e-8, 4.32e-8, 1.94e-8, 4.285e-8, 2.177e-8],
+      "12pF": [9.04e-8, 2e-8, 17.564e-8, 7.513e-8, 18e-8],
+      "25pF": [4e-8, 18.146e-8, 3.582e-7, 4.516e-8, 3.6e-7],
+      "37pF": [6e-8, 2.617e-7, 1.258e-7, 6.741e-8, 5.4e-7],
+      "50pF": [8e-8, 1.895e-7, 7.128e-7, 3.833e-7, 7.2e-7],
+      "62pF": [10e-8, 4.4767e-7, 8.891e-7, 10.356e-8, 9e-7],
+      "75pF": [12e-8, 6.3317e-7, 10.769e-7, 12.674e-8, 10.8e-7],
+      "87pF": [14e-8, 5.9674e-7, 11.431e-7, 14.374e-8, 12.6e-7]
+    },
+    "time_set_keithley": 1,
+    "time_get_data": 0.9
+  },
+  "m1": {
+    "channel_number": 8,
+    "units": "io/m1/adc/channel_1/units.json",
+    "keithley": "io/m1/calibration/keithley/source_value/value.json",
+    "data": "io/m1/adc",
+    "range": ["5V", "10V"],
+    "max_current_range": { "5V": 5, "10V": 10 },
+    "source_keithley": {
+      "5V": [1, 5, 2.6, -1.47, -5, -3.77],
+      "10V": [1, 10, 5.6, -1.47, -10, -6.77]
+    },
+    "time_set_keithley": 2.4,
+    "time_get_data": 2
+  },
+  "mx1": {
+    "channel_number": 8,
+    "units": "io/mx1/adc/channel_1/units.json",
+    "keithley": "io/mx1/mx1_calibration/keithley/source_value/value.json",
+    "data": "io/mx1/adc",
+    "max_current_range": 10,
+    "source_keithley": [1, 10, 5.6, -1.47, -10, -6.77],
+    "time_set_keithley": 0.9,
+    "time_get_data": 0.9
+  },
+  "tx2": {
+    "channel_number": [1, 2, 3, 4, 5, 6, 7, 8],
+    "units": "io/tx2/adc/channel_1/units.json",
+    "keithley": "io/tx2/calibration/keithley/source_value/value.json",
+    "data": "io/tx2/adc",
+    "range": ["28kG", "7kG", "2.8kG", "700G"],
+    "max_current_range": 10,
+    "max_current_range_x10": 1,
+    "source_keithley": [1, 10, 5.76, 2.311, -1.478, -10, -6.775],
+    "source_keithley_x10": [0.1, 0.95, 0.563, -0.1478, -0.95, -0.6775, 1],
+    "time_set_keithley": 0.9,
+    "time_get_data": 0.9
+  },
+  "t1": {
+    "channel_number": [1, 2],
+    "units": "io/t1/adc/channel_1/units.json",
+    "keithley": "io/t1/calibration/keithley/source_value/value.json",
+    "data": "io/t1/adc",
+    "range": ["28kG", "7kG", "2.8kG", "700G"],
+    "max_current_range": 10,
+    "max_current_range_x10": 1,
+    "source_keithley": [1, 10, 5.76, 2.311, -1.478, -10, -6.775],
+    "source_keithley_x10": [0.1, 0.95, 0.563, -0.1478, -0.95, -0.6775, 1],
+    "time_set_keithley": 1,
+    "time_get_data": 0.9
+  }
+}

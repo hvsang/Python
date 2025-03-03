@@ -1,19 +1,44 @@
 
 import time
 import requests
+from tqdm import tqdm # pip install tqdm
 
-bufer = "http://10.11.25.139/io/t1/adc/data_acquisition/buffer_size/value.json"
-collect = "http://10.11.25.139/io/t1/probe/calibration/set_temperature_button/value.json"
+ip = "10.11.25.99"
 
+# url UTX
+url_utx_source = f"http://{ip}/io/ix256/calibration/utx_client/source/value.json"
+url_utx_output_256_enabled = f"http://{ip}/io/ix256/calibration/utx_client/output_256_enabled/value.json"
+url_utx_output_256_channel = f"http://{ip}/io/ix256/calibration/utx_client/output_256_channel/value.json"
 
-# requests.put(bufer,'250')
-# time.sleep(1)
-# requests.put(collect,'true')
-# time.sleep(1)
-while True:
-    for i in range(1, 1001):  # Changed to iterate from 1 to 1000
-        requests.put(collect, 'true')
+# url IX256
+url_ix256_clear_gains_button = f"http://{ip}/io/ix256/adc/calibration/clear_gains_button/value.json"
+url_ix256_universal_button = f"http://{ip}/io/ix256/adc/calibration/all_gains_sequence/universal_button/value.json"
+
+# Setup UT
+requests.put(url_utx_source, '"external"')
+time.sleep(1)
+requests.put(url_utx_output_256_enabled, "true")
+time.sleep(1)
+
+# Setup IX256
+requests.put(url_ix256_clear_gains_button, "true")
+time.sleep(0.5)
+requests.put(url_ix256_clear_gains_button, "false")
+time.sleep(1)
+requests.put(url_ix256_universal_button, "true")
+time.sleep(0.5)
+requests.put(url_ix256_universal_button, "false")
+time.sleep(1)
+
+# Main calibration loop with progress bar
+for i in tqdm(range(1, 257), desc=f"Calibrating channels", unit="channel"):
+    requests.put(url_utx_output_256_channel, f"{i}")
+    time.sleep(0.5)
+    url_ix256_universal_button = f"http://{ip}/io/ix256/adc/channel_{i}/calibrate_input_sequence/universal_button/value.json"
+    requests.put(url_ix256_universal_button, "true")
+    time.sleep(0.5)
+    requests.put(url_ix256_universal_button, "false")
+
+    # Add progress bar for the 70-second wait
+    for _ in tqdm(range(70), desc=f"Waiting for channel {i}", unit="Channel", leave=False):
         time.sleep(1)
-# time.sleep(5)
-# requests.put(url,'"2"')
-# time.sleep(5)

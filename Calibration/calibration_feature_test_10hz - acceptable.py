@@ -1,20 +1,15 @@
 import os
-import openpyxl
 import numpy as np
-import math
 import json
 import pandas as pd
 import time
 import requests
 import pandas as pd
 import shutil
-from datetime import datetime
 # install all library python to run code (pip install requests/pandas/numpy/openpyxl/xlsxwriter)
 
 
 # get data_json_file
-
-
 def get_data_json():
     try:
         with open(path, "r", encoding="utf-8") as jsonfile:
@@ -23,29 +18,25 @@ def get_data_json():
     except:
         return None
 
+
 # get_device_name
-
-
 def get_device_name():
     url = f"http://{ip}/io/admin/device_type/value.json"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.text.replace('"', '')
-    return data.lower()
+    return data.strip().lower()
 
 
 # device_valid
-
-
 def is_device_valid():
     try:
         return get_device_name() in get_data_json()
     except:
         return False
 
+
 # get select_channel path
-
-
 def get_select_channel_path(component=""):
     data = get_data_json()
     try:
@@ -56,9 +47,8 @@ def get_select_channel_path(component=""):
     except:
         return None
 
+
 # set_select_channel_number
-
-
 def set_channel_output(channel_number=0):
     url = f"http://{ip}/{select_channel_path}"
     response = requests.put(url, str(channel_number))
@@ -67,9 +57,8 @@ def set_channel_output(channel_number=0):
         data = int(requests.get(url).text)
     return data
 
+
 # get_units_path
-
-
 def get_units_path(component=""):
     data = get_data_json()
     try:
@@ -80,9 +69,8 @@ def get_units_path(component=""):
     except:
         return None
 
+
 # get Unit
-
-
 def get_unit():
     url = f"http://{ip}/{units_path}"
     response = requests.get(url)
@@ -114,8 +102,6 @@ def set_source_keithley(input_current=0.0, time_delay=0.1):
 
 
 # change input current
-
-
 def convert_value_keithley(input_current):
     unit_channel = get_unit()
     unit_list = {"m": 1e-3, "µ": 1e-6, "n": 1e-9, "p": 1e-12, "k": 1e3}
@@ -124,9 +110,8 @@ def convert_value_keithley(input_current):
             input_current /= unit_list[unit]
     return input_current
 
+
 # get_data_path
-
-
 def get_data_path(component=""):
     data = get_data_json()
     try:
@@ -137,9 +122,8 @@ def get_data_path(component=""):
     except:
         return None
 
+
 # get value 1 channel
-
-
 def get_data_channel(channel_number, total_samples=1, time_delay_get_data=0.1):
     url = f"http://{ip}/{data_path}/channel_{channel_number}/value.json"
     Data = []
@@ -156,9 +140,8 @@ def get_data_channel(channel_number, total_samples=1, time_delay_get_data=0.1):
         count += 1
     return Data
 
+
 # get column name
-
-
 def column_name(channel_number):
     col_name = f"Channel_{channel_number}" + \
         "(" + get_unit() + ")"
@@ -166,8 +149,6 @@ def column_name(channel_number):
 
 
 # calculate Calibration
-
-
 def check_relative_error(max_input_range, input_current, data_collect):
     data_handle = {}
     converted_keithley_value = convert_value_keithley(input_current)
@@ -175,7 +156,7 @@ def check_relative_error(max_input_range, input_current, data_collect):
     data_handle["Error (%)"] = abs(np.array(data_collect) -
                                    converted_keithley_value)*100/max_input_range
     result = []
-    if device_name == "ix256" and device_component_name == "base" or device_name == "i128-micro":
+    if device_name == "ix256-f2" and device_component_name == "base" or device_name == "i128-micro":
         for i in data_handle["Error (%)"]:
             if i <= 0.1:
                 result.append("Pass")
@@ -184,18 +165,19 @@ def check_relative_error(max_input_range, input_current, data_collect):
             else:
                 result.append("Fail")
     else:
+        # If you want FX4 to display Fail/Pass (not display Acceptable), modify the code here (remove elif)
         for i in data_handle["Error (%)"]:
-            if i > 0.1:
-                result.append("Fail")
-            else:
+            if i <= 0.1:
                 result.append("Pass")
+            elif i > 0.1 and i <= 1:
+                result.append("Acceptable")
+            else:
+                result.append("Fail")
     data_handle["Result"] = result
     return data_handle
 
 
 # set ingtergration frequency
-
-
 def intergration(frequency=0):
     url = f"http://{ip}/io/{device_name}/adc/integration_frequency/value.json"
     response = requests.put(url, str(frequency))
@@ -206,16 +188,13 @@ def intergration(frequency=0):
 
 
 # Format file
-
-
-def format_file(i, data, unit="", range=""):
+def format_file(i, data):
     # Create the result directory if it does not exist
     result_dir = "Pass"
     os.makedirs(result_dir, exist_ok=True)
 
     # Define the path for the Excel file
-    current_datetime = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    excel_path = f"{result_dir}/channel_{i}({unit})-{range}#{current_datetime}.xlsx"
+    excel_path = f"{result_dir}/channel_{i}.xlsx"
 
     # Create an Excel writer object
     with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
@@ -243,7 +222,7 @@ def format_file(i, data, unit="", range=""):
                 "E2:E21", {"type": "text", "criteria": "begins with", "value": "A", "format": yellow_format})
     time.sleep(0.1)
     # Define the destination directory and file path
-    if device_name == "ix256" and device_component_name == "base" or device_name == "i128-micro" or device_name == "i2":
+    if device_name == "ix256-f2" and device_component_name == "base" or device_name == "i128-micro":
         fail_dir = "Fail"
         accept_dir = "Acceptable"
         os.makedirs(fail_dir, exist_ok=True)
@@ -261,28 +240,38 @@ def format_file(i, data, unit="", range=""):
                     break
 
         if count_fail > 0:
-            destination_path = f"{fail_dir}/channel_{i}({unit})-{range}#{current_datetime}.xlsx"
+            destination_path = f"{fail_dir}/channel_{i}.xlsx"
             shutil.move(excel_path, destination_path)
         elif count_accept > 0:
-            destination_path = f"{accept_dir}/channel_{i}({unit})-{range}#{current_datetime}.xlsx"
+            destination_path = f"{accept_dir}/channel_{i}.xlsx"
             shutil.move(excel_path, destination_path)
     else:
+        # If you want FX4 to display Fail/Pass (not display Acceptable), modify the code here
         fail_dir = "Fail"
+        accept_dir = "Acceptable"
         os.makedirs(fail_dir, exist_ok=True)
+        os.makedirs(accept_dir, exist_ok=True)
         df = pd.read_excel(excel_path, sheet_name=None)
-        count = 0
+        count_fail = 0
+        count_accept = 0
         for sheetname, df_sheet in df.items():
             for column in df_sheet.columns:
                 if df_sheet[column].astype(str).str.contains("Fail").any():
-                    count += 1
+                    count_fail += 1
                     break
-        if count > 0:
-            destination_path = f"{fail_dir}/channel_{i}({unit})-{range}#{current_datetime}.xlsx"
+                elif df_sheet[column].astype(str).str.contains("Acceptable").any():
+                    count_accept += 1
+                    break
+
+        if count_fail > 0:
+            destination_path = f"{fail_dir}/channel_{i}.xlsx"
+            shutil.move(excel_path, destination_path)
+        elif count_accept > 0:
+            destination_path = f"{accept_dir}/channel_{i}.xlsx"
             shutil.move(excel_path, destination_path)
 
+
 # export result
-
-
 def result(input_current=[], channel_number=0, total_samples=0, full_scale_range=0, time_delay_keithley=0.1, time_delay_get_data=0.1, device_scale=1):
     data = []
     for i in input_current:
@@ -298,26 +287,21 @@ def result(input_current=[], channel_number=0, total_samples=0, full_scale_range
     return data
 
 
-# calculate calib FX4 device
-
-
-def fx4_device(channel_number="", total_samples=0):
-    channel_size = device_information[f"{device_name}"]["channel_number"]
-    if int(channel_number) > channel_size:
-        print("Over channel size")
-        return
-    
+# calculate calib FX4, F1 device
+def current_device(channel_number="", total_samples=0):
     full_scale_range = device_information[f"{device_name}"][
         "max_current_range"][f"{range_select}"]
     input_current = device_information[f"{device_name}"]["source_keithley"][f"{range_select}"]
+    channel_size = device_information[f"{device_name}"]["channel_number"]
     time_delay_keithley = device_information[f"{device_name}"]["time_set_keithley"]
     time_delay_get_data = device_information[f"{device_name}"]["time_get_data"]
-    unit_channel = get_unit()
-
-    data = result(input_current, channel_number,
-                    total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-    file_result = format_file(channel_number, data, unit_channel, range_select)
-    return file_result
+    if int(channel_number) > channel_size:
+        print("Over channel size")
+    else:
+        data = result(input_current, channel_number,
+                      total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
+        file_result = format_file(channel_number, data)
+        return file_result
 
 
 # calculate calib I2 device
@@ -341,19 +325,20 @@ def i2_device(channel_number="", total_samples=0, frequency=""):
     else:
         print("Frequency value does not exist in file")
 
-# calculate calib IX256 device
 
-
-def ix256_device(total_samples=0, device_component_name=""):
-    full_scale_range = device_information["ix256"][f"{device_component_name}"][
+# calculate calib I128_micro, IX256 device
+def charge_device(total_samples=0, device_component_name="base"):
+    full_scale_range = device_information[f"{device_name}"][f"{device_component_name}"][
         "max_current_range"][f"{range_select}"]
-    input_current = device_information["ix256"][f"{device_component_name}"][
+    input_current = device_information[f"{device_name}"][f"{device_component_name}"][
         "source_keithley"][f"{range_select}"]
-    time_delay_keithley = device_information["ix256"][
+    time_delay_keithley = device_information[f"{device_name}"][
         f"{device_component_name}"]["time_set_keithley"]
-    time_delay_get_data = device_information["ix256"][f"{device_component_name}"]["time_get_data"]
+    time_delay_get_data = device_information[f"{device_name}"][f"{device_component_name}"]["time_get_data"]
+    channel_number = device_information[f"{device_name}"][f"{device_component_name}"]["channel_number"]
+
     if device_component_name == "base":
-        for j in range(240, 257):
+        for j in range(1, channel_number + 1):
             a = set_channel_output(j)
             print("Channel: ", a)
             data = result(input_current, j,
@@ -361,110 +346,44 @@ def ix256_device(total_samples=0, device_component_name=""):
             file_result = format_file(j, data)
         return file_result
     else:
-        channel_number = 1
+        channel_number = 2
         data = result(input_current, channel_number,
                       total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
         file_result = format_file(channel_number, data)
         return file_result
 
-# calculate calib I128_micro device
 
-
-def i128_device(total_samples=0):
+# calculate calib m1, mx1 device
+def voltage_device(channel_number="", total_samples=0, range_select="10V"):
     full_scale_range = device_information[f"{device_name}"][
         "max_current_range"][f"{range_select}"]
     input_current = device_information[f"{device_name}"]["source_keithley"][f"{range_select}"]
+    channel_size = device_information[f"{device_name}"]["channel_number"]
     time_delay_keithley = device_information[f"{device_name}"]["time_set_keithley"]
     time_delay_get_data = device_information[f"{device_name}"]["time_get_data"]
-    channel=[1,4,23,43,56,65,120,110,69,67,49,39,79]
-    for j in channel:
-        a = set_channel_output(j)
-        print("Channel: ", a)
-        data = result(input_current, j,
+    if int(channel_number) > channel_size:
+        print("Over channel size")
+    else:
+        data = result(input_current, channel_number,
                       total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-        file_result = format_file(j, data)
-    return file_result
+        file_result = format_file(channel_number, data)
+        return file_result
 
 
-# calculate calib TX2 device
-
-def tx2_device(channel_number="", total_samples=0):
+# calculate calib TX2, T1 device
+def field_device(channel_number="", total_samples=0):
     full_scale_range = device_information[f"{device_name}"]["max_current_range"]
     channel_size = device_information[f"{device_name}"]["channel_number"]
     data = []
     device_scale = 1
     range_10x = ["2.8kG", "700G"]
     probe_channel = ["1", "5"]
-    input_current = device_information[f"{device_name}"]["source_keithley"]
     if int(channel_number) not in channel_size:
         print("Invalid channel")
         return
     if (range_select in range_10x) and (channel_number in probe_channel):
-        input_current = device_information[f"{device_name}"]["source_keithley_x10"]
-        full_scale_range = device_information[f"{device_name}"]["max_current_range_x10"]
-
-    time_delay_keithley = device_information[f"{device_name}"]["time_set_keithley"]
-    time_delay_get_data = device_information[f"{device_name}"]["time_get_data"]
-    data = result(input_current, channel_number,
-                  total_samples, full_scale_range, time_delay_keithley, time_delay_get_data, device_scale)
-
-    file_result = format_file(channel_number, data)
-    return file_result
-
-
-# calculate calib m1 device
-
-
-def m1_device(channel_number="", total_samples=0):
-    full_scale_range = device_information[f"{device_name}"][
-        "max_current_range"][f"{range_select}"]
-    input_current = device_information[f"{device_name}"]["source_keithley"][f"{range_select}"]
-    channel_size = device_information[f"{device_name}"]["channel_number"]
-    time_delay_keithley = device_information[f"{device_name}"]["time_set_keithley"]
-    time_delay_get_data = device_information[f"{device_name}"]["time_get_data"]
-    if int(channel_number) > channel_size:
-        print("Over channel size")
-    else:
-        data = result(input_current, channel_number,
-                      total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-        file_result = format_file(channel_number, data)
-        return file_result
-
-# calculate calib mx1 device
-
-
-def mx1_device(channel_number="", total_samples=0):
-    full_scale_range = device_information[f"{device_name}"]["max_current_range"]
+        device_scale = 0.1
     input_current = device_information[f"{device_name}"]["source_keithley"]
-    channel_size = device_information[f"{device_name}"]["channel_number"]
-    time_delay_keithley = device_information[f"{device_name}"]["time_set_keithley"]
-    time_delay_get_data = device_information[f"{device_name}"]["time_get_data"]
-    if int(channel_number) > channel_size:
-        print("Over channel size")
-    else:
-        data = result(input_current, channel_number,
-                      total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-        file_result = format_file(channel_number, data)
-        return file_result
-
-# Calculate calib t1 device
-
-
-def t1_device(channel_number="", total_samples=0):
-    full_scale_range = device_information[f"{device_name}"]["max_current_range"]
-    channel_size = device_information[f"{device_name}"]["channel_number"]
-    data = []
-    device_scale = 1
-    range_10x = ["2.8kG", "700G"]
-    probe_channel = ["1"]
-    input_current = device_information[f"{device_name}"]["source_keithley"]
-    if int(channel_number) not in channel_size:
-        print("Invalid channel")
-        return
-    if (range_select in range_10x) and (channel_number in probe_channel):
-        input_current = device_information[f"{device_name}"]["source_keithley_x10"]
-        full_scale_range = device_information[f"{device_name}"]["max_current_range_x10"]
-
     time_delay_keithley = device_information[f"{device_name}"]["time_set_keithley"]
     time_delay_get_data = device_information[f"{device_name}"]["time_get_data"]
     data = result(input_current, channel_number,
@@ -475,7 +394,7 @@ def t1_device(channel_number="", total_samples=0):
 
 
 try:
-    ip = input("Enter ip: ")
+    ip = "10.11.25.102"
     device_name = get_device_name()
     total_samples = 20
     path = "device_information.json"
@@ -484,10 +403,7 @@ try:
         print("The device name incorrect")
     else:
         if device_name != "m1" and device_name != "mx1":
-            range_select = input(
-                "Enter range select: ").replace(" ", "").replace("u", "µ").lower()
-            range_select = range_select[:-1] + range_select[-1].upper()
-            if device_name == "ix256":
+            if device_name == "ix256-f2":
                 device_component_name = input(
                     "Enter device component name of ix256: ")
                 units_path = get_units_path(device_component_name)
@@ -496,15 +412,39 @@ try:
                 select_channel_path = get_select_channel_path(
                     device_component_name)
                 device_information = get_data_json()
-                if device_component_name not in device_information["ix256"]:
-                    print("The device component name incorrect")
+                if device_component_name not in device_information["ix256-f2"]:
+                    print("The device component name is incorrect")
                 else:
-                    range_device = device_information["ix256"][f"{device_component_name}"]["range"]
+                    range_device = device_information["ix256-f2"][f"{device_component_name}"]["range"]
+                    if device_component_name == "base":
+                        range_select = int(input("Enter range select: "))
+                    else:
+                        range_select = input("Enter range select: ").replace(
+                            " ", "").replace("u", "µ").lower()
+                        range_select = range_select[:-
+                                                    1] + range_select[-1].upper()
                     if range_select in range_device:
-                        ix256_device(total_samples, device_component_name)
+                        charge_device(total_samples, device_component_name)
                     else:
                         print("Invalid select range")
+            elif device_name == "i128-micro":
+                range_select = int(input("Enter range select: "))
+                range_device = device_information[f"{device_name}"]["range"]
+                component = ""
+                units_path = get_units_path(component)
+                keithley_path = get_keithley_path(component)
+                data_path = get_data_path(component)
+                range_device = device_information[f"{device_name}"]["range"]
+                select_channel_path = get_select_channel_path(component)
+                if range_select in range_device:
+                    charge_device(total_samples)
+                else:
+                    print("Invalid select range")
+
             else:
+                range_select = input(
+                    "Enter range select: ").replace(" ", "").replace("u", "µ").lower()
+                range_select = range_select[:-1] + range_select[-1].upper()
                 component = ""
                 units_path = get_units_path(component)
                 keithley_path = get_keithley_path(component)
@@ -524,28 +464,26 @@ try:
                             else:
                                 i2_device(channel_number,
                                           total_samples, frequency)
-                    elif device_name == "i128-micro":
-                        select_channel_path = get_select_channel_path(
-                            component)
-                        i128_device(total_samples)
                     elif device_name == "tx2":
                         channel_number = input("Enter channel number: ")
                         if not channel_number.isdigit():
                             print("Invalid channel")
                         else:
-                            tx2_device(channel_number, total_samples)
+                            field_device(channel_number, total_samples)
                     elif device_name == "t1":
                         channel_number = input("Enter channel number: ")
                         if not channel_number.isdigit():
                             print("Invalid channel")
                         else:
-                            t1_device(channel_number, total_samples)
+                            field_device(channel_number, total_samples)
+                    elif device_name == "f1":
+                        current_device("1", total_samples)
                     else:
                         channel_number = input("Enter channel number: ")
                         if not channel_number.isdigit():
                             print("Invalid channel")
                         else:
-                            fx4_device(channel_number, total_samples)
+                            current_device(channel_number, total_samples)
                 else:
                     print("Invalid select range")
         elif device_name == "m1":
@@ -561,7 +499,7 @@ try:
                 if not channel_number.isdigit():
                     print("Invalid channel")
                 else:
-                    m1_device(channel_number, total_samples)
+                    voltage_device(channel_number, total_samples, range_select)
             else:
                 print("Invalid select range")
         else:
@@ -573,7 +511,7 @@ try:
             if not channel_number.isdigit():
                 print("Invalid channel")
             else:
-                mx1_device(channel_number, total_samples)
+                voltage_device(channel_number, total_samples)
 
 except:
     print("Invalid Ip device name")

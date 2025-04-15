@@ -309,6 +309,7 @@
       "units": "io/ix256/adc/channel_2/units.json",
       "keithley": "io/ix256/calibration_manager/keithley/source_value/value.json",
       "data": "io/ix256/adc",
+      "range_path": "/io/ix256/adc/range/value.json",
       "range": [
         0,
         1,
@@ -446,12 +447,67 @@
       "time_get_data": 0.9
     }
   },
+  "ix512": {
+    "base": {
+      "channel_number": 256,
+      "units": "io/ix512/adc/channel_2/units.json",
+      "keithley": "io/ix512/calibration_manager/keithley/source_value/value.json",
+      "data": "io/ix512/adc",
+      "range_path": "/io/ix512/adc/range/value.json",
+      "range": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "select_channel": "io/ix512/calibration_manager/utx_client/output_256_channel/value.json",
+      "max_current_range": {
+        "0": 36,
+        "1": 150,
+        "2": 300,
+        "3": 450
+      },
+      "source_keithley": {
+        "0": [
+          3.60E-09,
+          1.08E-08,
+          1.80E-08,
+          2.52E-08,
+          3.24E-08
+        ],
+        "1": [
+          1.50E-08,
+          4.50E-08,
+          7.50E-08,
+          1.05E-07,
+          1.35E-07
+        ],
+        "2": [
+          3.00E-08,
+          9.00E-08,
+          1.50E-07,
+          2.10E-07,
+          2.70E-07
+        ],
+        "3": [
+          4.50E-08,
+          1.35E-07,
+          2.25E-07,
+          3.15E-07,
+          4.05E-07
+        ]
+      },
+      "time_set_keithley": 1.1,
+      "time_get_data": 1.1
+    }
+  },
   "i128-micro": {
     "base": {
       "channel_number": 128,
       "units": "io/i128_micro/adc/channel_1/units.json",
       "keithley": "io/i128_micro/calibration_manager/keithley/source_value/value.json",
       "data": "io/i128_micro/adc",
+      "range_path": "/io/i128_micro/adc/range/value.json",
       "range": [
         0,
         1,

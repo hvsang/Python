@@ -1,11 +1,10 @@
 import os
-import numpy as np
 import json
-import pandas as pd
 import time
-import requests
-import pandas as pd
 import shutil
+import requests
+import numpy as np
+import pandas as pd
 # install all library python to run code (pip install requests/pandas/numpy/openpyxl/xlsxwriter)
 
 
@@ -155,24 +154,17 @@ def check_relative_error(max_input_range, input_current, data_collect):
     data_handle["Input ("+get_unit() + ")"] = converted_keithley_value
     data_handle["Error (%)"] = abs(np.array(data_collect) -
                                    converted_keithley_value)*100/max_input_range
+
     result = []
-    if device_name == "ix256-f2" and device_component_name == "base" or device_name == "i128-micro":
-        for i in data_handle["Error (%)"]:
-            if i <= 0.1:
-                result.append("Pass")
-            elif i > 0.1 and i <= 1:
-                result.append("Acceptable")
-            else:
-                result.append("Fail")
-    else:
-        # If you want FX4 to display Fail/Pass (not display Acceptable), modify the code here (remove elif)
-        for i in data_handle["Error (%)"]:
-            if i <= 0.1:
-                result.append("Pass")
-            elif i > 0.1 and i <= 1:
-                result.append("Acceptable")
-            else:
-                result.append("Fail")
+
+    for i in data_handle["Error (%)"]:
+        if i <= 0.1:
+            result.append("Pass")
+        elif i > 0.1 and i <= 1:
+            result.append("Acceptable")
+        else:
+            result.append("Fail")
+
     data_handle["Result"] = result
     return data_handle
 
@@ -187,88 +179,84 @@ def intergration(frequency=0):
         return data
 
 
-# Format file
-def format_file(i, data, range=""):
-    # Create the result directory if it does not exist
-    result_dir = "Pass"
-    os.makedirs(result_dir, exist_ok=True)
+# Check Excel file and return counts for Fail/Acceptable.
+def check_results(excel_path):
+    df = pd.read_excel(excel_path, sheet_name=None)
+    count_fail, count_accept = 0, 0
 
-    # Define the path for the Excel file
-    excel_path = f"{result_dir}/channel_{i}({range}).xlsx"
+    for _, df_sheet in df.items():
+        col_strs = df_sheet.astype(str)
+        for column in col_strs.columns:
+            if col_strs[column].str.contains("Fail").any():
+                count_fail += 1
+                break
+            elif col_strs[column].str.contains("Acceptable").any():
+                count_accept += 1
+                break
+    return count_fail, count_accept
 
-    # Create an Excel writer object
-    with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
-        number = 0
-        for df in data:
-            number += 1
-            df.to_excel(
-                writer, sheet_name=f'Value_{number}', index_label="Index")
 
-            # Access the workbook and worksheet
-            workbook = writer.book
-            worksheet = writer.sheets[f"Value_{number}"]
+# Create directory if not exists.
+def ensure_dir(path):
+    os.makedirs(path, exist_ok=True)
 
-            # Define formatting styles
-            red_format = workbook.add_format({"bg_color": "red"})
-            green_format = workbook.add_format({"bg_color": "green"})
-            yellow_format = workbook.add_format({"bg_color": "yellow"})
 
-            # Apply conditional formatting
-            worksheet.conditional_format(
-                "E2:E21", {"type": "text", "criteria": "begins with", "value": "F", "format": red_format})
-            worksheet.conditional_format(
-                "E2:E21", {"type": "text", "criteria": "begins with", "value": "P", "format": green_format})
-            worksheet.conditional_format(
-                "E2:E21", {"type": "text", "criteria": "begins with", "value": "A", "format": yellow_format})
-    time.sleep(0.1)
-    # Define the destination directory and file path
-    if device_name == "ix256-f2" and device_component_name == "base" or device_name == "i128-micro":
-        fail_dir = "Fail"
-        accept_dir = "Acceptable"
-        os.makedirs(fail_dir, exist_ok=True)
-        os.makedirs(accept_dir, exist_ok=True)
-        df = pd.read_excel(excel_path, sheet_name=None)
-        count_fail = 0
-        count_accept = 0
-        for sheetname, df_sheet in df.items():
-            for column in df_sheet.columns:
-                if df_sheet[column].astype(str).str.contains("Fail").any():
-                    count_fail += 1
-                    break
-                elif df_sheet[column].astype(str).str.contains("Acceptable").any():
-                    count_accept += 1
-                    break
-
-        if count_fail > 0:
-            destination_path = f"{fail_dir}/channel_{i}({range}).xlsx"
-            shutil.move(excel_path, destination_path)
-        elif count_accept > 0:
-            destination_path = f"{accept_dir}/channel_{i}({range}).xlsx"
-            shutil.move(excel_path, destination_path)
+# Move Excel file to the correct directory.
+def move_file(excel_path, target_dir, i, range_val):
+    sub_dir = f"range_{range_val}" if range_val else ""
+    if sub_dir:
+        ensure_dir(os.path.join(target_dir, sub_dir))
     else:
-        # If you want FX4 to display Fail/Pass (not display Acceptable), modify the code here
-        fail_dir = "Fail"
-        accept_dir = "Acceptable"
-        os.makedirs(fail_dir, exist_ok=True)
-        os.makedirs(accept_dir, exist_ok=True)
-        df = pd.read_excel(excel_path, sheet_name=None)
-        count_fail = 0
-        count_accept = 0
-        for sheetname, df_sheet in df.items():
-            for column in df_sheet.columns:
-                if df_sheet[column].astype(str).str.contains("Fail").any():
-                    count_fail += 1
-                    break
-                elif df_sheet[column].astype(str).str.contains("Acceptable").any():
-                    count_accept += 1
-                    break
+        ensure_dir(target_dir)
 
-        if count_fail > 0:
-            destination_path = f"{fail_dir}/channel_{i}({range}).xlsx"
-            shutil.move(excel_path, destination_path)
-        elif count_accept > 0:
-            destination_path = f"{accept_dir}/channel_{i}({range}).xlsx"
-            shutil.move(excel_path, destination_path)
+    filename = f"channel_{i}({range_val}).xlsx"
+    destination_path = os.path.join(
+        target_dir, sub_dir, filename) if sub_dir else os.path.join(target_dir, filename)
+
+    shutil.move(excel_path, destination_path)
+
+
+# Always create Pass directory (with optional range subdir)
+def format_file(i, data, range_val=""):
+    result_dir = "Pass"
+    sub_dir = f"range_{range_val}" if range_val else ""
+    if sub_dir:
+        ensure_dir(os.path.join(result_dir, sub_dir))
+    else:
+        ensure_dir(result_dir)
+
+    excel_path = os.path.join(result_dir, sub_dir, f"channel_{i}({range_val}).xlsx") if sub_dir else os.path.join(
+        result_dir, f"channel_{i}({range_val}).xlsx")
+
+    # Write data to Excel
+    with pd.ExcelWriter(excel_path, engine="xlsxwriter") as writer:
+        for idx, df in enumerate(data, start=1):
+            df.to_excel(writer, sheet_name=f"Value_{idx}", index_label="Index")
+            workbook, worksheet = writer.book, writer.sheets[f"Value_{idx}"]
+
+            # Apply formatting
+            formats = {
+                "F": workbook.add_format({"bg_color": "red"}),
+                "P": workbook.add_format({"bg_color": "green"}),
+                "A": workbook.add_format({"bg_color": "yellow"}),
+            }
+            for prefix, fmt in formats.items():
+                worksheet.conditional_format(
+                    "E2:E21",
+                    {"type": "text", "criteria": "begins with",
+                        "value": prefix, "format": fmt},
+                )
+
+    time.sleep(0.1)
+
+    # Decide where to move file
+    fail_dir, accept_dir = "Fail", "Acceptable"
+    count_fail, count_accept = check_results(excel_path)
+
+    if count_fail > 0:
+        move_file(excel_path, fail_dir, i, range_val)
+    elif count_accept > 0:
+        move_file(excel_path, accept_dir, i, range_val)
 
 
 # export result
@@ -287,79 +275,95 @@ def result(input_current=[], channel_number=0, total_samples=0, full_scale_range
     return data
 
 
+def compute_input(full_scale_range):
+    """Compute input currents for calibration (-90% → +90%)."""
+    scale_factors = [-0.9, -0.75, -0.5, -0.25, -0.1, 0.1, 0.25, 0.5, 0.75, 0.9]
+    return [full_scale_range * s for s in scale_factors]
+
+
 # calculate calib FX4, F1 device
-def current_device(channel_number="", total_samples=0):
-    full_scale_range = device_information[f"{device_name}"][
-        "max_current_range"][f"{range_select}"]
-    input_current = device_information[f"{device_name}"]["source_keithley"][f"{range_select}"]
-    channel_size = device_information[f"{device_name}"]["channel_number"]
-    time_delay_keithley = device_information[f"{device_name}"]["time_set_keithley"]
-    time_delay_get_data = device_information[f"{device_name}"]["time_get_data"]
-    if int(channel_number) > channel_size:
-        print("Over channel size")
-    else:
-        data = result(input_current, channel_number,
-                      total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-        file_result = format_file(channel_number, data)
-        return file_result
+def current_device(channel_number="", total_samples=0, range_device=[]):
+    def scale_full_range(range_selected, full_scale_range):
+        """Scale full scale range depending on unit (nA, µA, mA)."""
+        scale_map = {
+            **{k: 1e9 for k in (0, 1)},        # A → nA
+            **{k: 1e6 for k in (2, 3, 4, 5)},  # A → µA
+            **{k: 1e3 for k in (6, 7)},        # A → mA
+        }
+        return full_scale_range * scale_map.get(range_selected, 1)
 
+    device_config = device_information[f"{device_name}"]
 
-# calculate calib I2 device
-def i2_device(channel_number="", total_samples=0, frequency=""):
-    intergration_device = device_information[f"{device_name}"]["intergration_frequency"]
-    channel_size = device_information[f"{device_name}"]["channel_number"]
-    if frequency in intergration_device:
-        intergration(intergration_frequency)
-        full_scale_range = device_information[f"{device_name}"][
-            "max_current_range"][f"{range_select}"][f"{frequency}"]
-        input_current = device_information[f"{device_name}"]["source_keithley"][f"{range_select}"][f"{frequency}"]
-        time_delay_keithley = device_information[f"{device_name}"]["time_set_keithley"]
-        time_delay_get_data = device_information[f"{device_name}"]["time_get_data"]
+    channel_size = device_config["channel_number"]
+    time_delay_keithley = device_config["time_set_keithley"]
+    time_delay_get_data = device_config["time_get_data"]
+
+    range_selected_path = device_config["range_path"]
+    range_path = f"http://{ip}{range_selected_path}"
+
+    for range_selected in range_device:
+        requests.put(range_path, f'"{range_selected}"')
+        time.sleep(2.5)
+
+        full_scale_range = device_config["max_current_range"][f"{range_selected}"]
+        input_current = compute_input(full_scale_range)
+
+        full_scale_range = scale_full_range(range_selected, full_scale_range)
+
         if int(channel_number) > channel_size:
             print("Over channel size")
         else:
+            print(f"Range {range_selected}, Channel {channel_number}:")
             data = result(input_current, channel_number,
                           total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-            file_result = format_file(channel_number, data)
-            return file_result
-    else:
-        print("Frequency value does not exist in file")
+            format_file(channel_number, data, f"{range_selected}")
 
 
 # calculate calib I128_micro, IX256 device
-def charge_device(total_samples=0, device_component_name="base"):
-    full_scale_range = device_information[f"{device_name}"][f"{device_component_name}"][
-        "max_current_range"][f"{0}"]
-    input_current = device_information[f"{device_name}"][f"{device_component_name}"][
-        "source_keithley"][f"{0}"]
-    time_delay_keithley = device_information[f"{device_name}"][
-        f"{device_component_name}"]["time_set_keithley"]
-    time_delay_get_data = device_information[f"{device_name}"][f"{device_component_name}"]["time_get_data"]
-    channel_number = device_information[f"{device_name}"][f"{device_component_name}"]["channel_number"]
+def charge_device(total_samples=0, device_component_name="base", range_device=[], channel_number=None):
+    def compute_input_charge(full_scale_range):
+        """Compute input currents for charge calibration (10% → 90%)."""
+        scale_factors = [0.1, 0.25, 0.5, 0.75, 0.9]
+        return [full_scale_range * 1e-9 * s for s in scale_factors]
+
+    device_config = device_information[f"{device_name}"][f"{device_component_name}"]
+
+    time_delay_keithley = device_config["time_set_keithley"]
+    time_delay_get_data = device_config["time_get_data"]
 
     if device_component_name == "base":
-        range_selected_path = device_information[f"{device_name}"][f"{device_component_name}"]["range_path"]
+        channel_size = device_config["channel_number"]
+        range_selected_path = device_config["range_path"]
         range_path = f"http://{ip}{range_selected_path}"
-        for range_selected in range(0, 4):
+        for range_selected in range_device:
             requests.put(range_path, f'"{range_selected}"')
-            time.sleep(1)
-            full_scale_range = device_information[f"{device_name}"][f"{device_component_name}"][
-                "max_current_range"][f"{range_selected}"]
-            input_current = device_information[f"{device_name}"][f"{device_component_name}"][
-                "source_keithley"][f"{range_selected}"]
+            time.sleep(2.5)
+            max_current_range_path = f'http://{ip}{device_config["max_current_range_path"]}'
+            full_scale_range = float(requests.get(max_current_range_path).text)
+            input_current = compute_input_charge(full_scale_range)
 
-            for j in range(1, 257):
-                a = set_channel_output(j)
-                print("Channel: ", a)
-                data = result(input_current, j,
-                              total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-                format_file(j, data, f"{range_selected}")
+            if channel_number is None:
+                for ch in range(1, channel_size + 1):
+                    channel = set_channel_output(ch)
+                    print(f"Range {range_selected}, Channel {channel}:")
+                    data = result(input_current, ch,
+                                  total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
+                    format_file(ch, data, f"{range_selected}")
+            else:
+                if int(channel_number) > channel_size:
+                    print("Over channel size")
+                else:
+                    print(f"Range {range_selected}, Channel {channel_number}:")
+                    data = result(input_current, channel_number,
+                                  total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
+                    format_file(channel_number, data, f"{range_selected}")
     else:
-        channel_number = 2
-        data = result(input_current, channel_number,
+        full_scale_range = device_config["max_current_range"][f"{range_select}"]
+        input_current = device_config["source_keithley"][f"{range_select}"]
+        channel_size = 2
+        data = result(input_current, channel_size,
                       total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-        file_result = format_file(channel_number, data)
-        return file_result
+        format_file(channel_size, data)
 
 
 # calculate calib m1, mx1 device
@@ -403,7 +407,7 @@ def field_device(channel_number="", total_samples=0):
 
 
 try:
-    ip = "10.11.25.212"
+    ip = "10.11.25.168"
     device_name = get_device_name()
     total_samples = 20
     path = "device_information.json"
@@ -425,45 +429,50 @@ try:
                     print("The device component name is incorrect")
                 else:
                     range_device = device_information["ix256-f2"][f"{device_component_name}"]["range"]
-                    if device_component_name == "base":
-                        range_select = int(input("Enter range select: "))
-                    else:
+                    if not device_component_name == "base":
                         range_select = input("Enter range select: ").replace(
                             " ", "").replace("u", "µ").lower()
                         range_select = range_select[:-
                                                     1] + range_select[-1].upper()
-                    if range_select in range_device:
-                        charge_device(total_samples, device_component_name)
+                        if range_select in range_device:
+                            charge_device(
+                                total_samples, device_component_name, range_device)
+                        else:
+                            print("Invalid select range")
                     else:
-                        print("Invalid select range")
-            elif device_name == "ix512":
-                device_component_name = input(
-                    "Enter device component name of ix512: ")
-                units_path = get_units_path(device_component_name)
-                keithley_path = get_keithley_path(device_component_name)
-                data_path = get_data_path(device_component_name)
-                select_channel_path = get_select_channel_path(
-                    device_component_name)
+                        charge_device(
+                            total_samples, device_component_name, range_device)
+            elif device_name in ("ix512", "i128-micro", "i2"):
+                units_path = get_units_path("base")
+                keithley_path = get_keithley_path("base")
+                data_path = get_data_path("base")
+                select_channel_path = get_select_channel_path("base")
                 device_information = get_data_json()
-                if device_component_name not in device_information["ix512"]:
-                    print("The device component name is incorrect")
+                range_device = device_information[device_name]["base"]["range"]
+                if device_name in ("ix512", "i128-micro"):
+                    charge_device(total_samples, "base", range_device)
                 else:
-                    range_device = device_information["ix512"][f"{device_component_name}"]["range"]
-                    charge_device(total_samples, device_component_name)
-            elif device_name == "i128-micro":
-                range_select = int(input("Enter range select: "))
-                range_device = device_information[f"{device_name}"]["range"]
+                    channel_number = input("Enter channel number: ")
+                    if not channel_number.isdigit():
+                        print("Invalid channel")
+                    else:
+                        charge_device(total_samples, "base",
+                                      range_device, channel_number)
+            elif device_name in ("f1", "fx4"):
                 component = ""
                 units_path = get_units_path(component)
                 keithley_path = get_keithley_path(component)
                 data_path = get_data_path(component)
                 range_device = device_information[f"{device_name}"]["range"]
-                select_channel_path = get_select_channel_path(component)
-                if range_select in range_device:
-                    charge_device(total_samples)
-                else:
-                    print("Invalid select range")
-
+                if device_name == "f1":
+                    current_device("1", total_samples, range_device)
+                elif device_name == "fx4":
+                    channel_number = input("Enter channel number: ")
+                    if not channel_number.isdigit():
+                        print("Invalid channel")
+                    else:
+                        current_device(
+                            channel_number, total_samples, range_device)
             else:
                 range_select = input(
                     "Enter range select: ").replace(" ", "").replace("u", "µ").lower()
@@ -474,20 +483,7 @@ try:
                 data_path = get_data_path(component)
                 range_device = device_information[f"{device_name}"]["range"]
                 if range_select in range_device:
-                    if device_name == "i2":
-                        intergration_frequency = input(
-                            "Enter intergration frequency: ")
-                        if not intergration_frequency.isdigit():
-                            print("Invalid Intergration frequency")
-                        else:
-                            frequency = str(intergration_frequency)+"Hz"
-                            channel_number = input("Enter channel number: ")
-                            if not channel_number.isdigit():
-                                print("Invalid channel")
-                            else:
-                                i2_device(channel_number,
-                                            total_samples, frequency)
-                    elif device_name == "tx2":
+                    if device_name == "tx2":
                         channel_number = input("Enter channel number: ")
                         if not channel_number.isdigit():
                             print("Invalid channel")
@@ -499,14 +495,6 @@ try:
                             print("Invalid channel")
                         else:
                             field_device(channel_number, total_samples)
-                    elif device_name == "f1":
-                        current_device("1", total_samples)
-                    else:
-                        channel_number = input("Enter channel number: ")
-                        if not channel_number.isdigit():
-                            print("Invalid channel")
-                        else:
-                            current_device(channel_number, total_samples)
                 else:
                     print("Invalid select range")
         elif device_name == "m1":

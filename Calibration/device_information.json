@@ -1,74 +1,29 @@
 {
   "f1": {
-    "channel_number": 4,
+    "channel_number": 1,
     "units": "io/f1/adc/channel_1/units.json",
     "keithley": "io/f1/calibration_manager/keithley/source_value/value.json",
+    "range_path": "/io/f1/adc/range/value.json",
     "data": "io/f1/adc",
     "range": [
-      "100nA",
-      "1µA",
-      "10µA",
-      "100µA",
-      "1mA",
-      "10mA"
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
     ],
     "max_current_range": {
-      "100nA": 100,
-      "1µA": 1,
-      "10µA": 10,
-      "100µA": 100,
-      "1mA": 1,
-      "10mA": 10
-    },
-    "source_keithley": {
-      "100nA": [
-        9e-8,
-        -7.53e-8,
-        6.501e-8,
-        -9e-8,
-        6.82e-8,
-        -6.567e-8
-      ],
-      "1µA": [
-        1e-7,
-        -9e-7,
-        4.57e-7,
-        -1e-7,
-        9e-7,
-        -6.55e-7
-      ],
-      "10µA": [
-        1e-6,
-        -9e-6,
-        4.5e-6,
-        -1e-6,
-        9e-6,
-        -4.53e-6
-      ],
-      "100µA": [
-        1e-5,
-        -3.363e-5,
-        9e-5,
-        -4.577e-5,
-        7e-5,
-        -1e-5
-      ],
-      "1mA": [
-        0.0001,
-        -0.000651,
-        0.0009,
-        -0.0001,
-        0.00045,
-        -0.0009
-      ],
-      "10mA": [
-        0.001,
-        -0.00553,
-        0.009,
-        -0.001,
-        0.0045,
-        -0.009
-      ]
+      "0": 100e-9,
+      "1": 100e-9,
+      "2": 1e-6,
+      "3": 1e-6,
+      "4": 10e-6,
+      "5": 100e-6,
+      "6": 1e-3,
+      "7": 10e-3
     },
     "time_set_keithley": 2.4,
     "time_get_data": 2
@@ -77,231 +32,53 @@
     "channel_number": 4,
     "units": "io/fx4/adc/channel_1/units.json",
     "keithley": "io/fx4/calibration_manager/keithley/source_value/value.json",
+    "range_path": "/io/fx4/range/value.json",
     "data": "io/fx4/adc",
     "range": [
-      "100nA",
-      "1µA",
-      "10µA",
-      "100µA",
-      "1mA",
-      "10mA"
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
     ],
     "max_current_range": {
-      "100nA": 100,
-      "1µA": 1,
-      "10µA": 10,
-      "100µA": 100,
-      "1mA": 1,
-      "10mA": 10
-    },
-    "source_keithley": {
-      "100nA": [
-        9e-8,
-        -7.53e-8,
-        6.501e-8,
-        -9e-8,
-        6.82e-8,
-        -6.567e-8
-      ],
-      "1µA": [
-        1e-7,
-        -9e-7,
-        4.57e-7,
-        -1e-7,
-        9e-7,
-        -6.55e-7
-      ],
-      "10µA": [
-        1e-6,
-        -9e-6,
-        4.5e-6,
-        -1e-6,
-        9e-6,
-        -4.53e-6
-      ],
-      "100µA": [
-        1e-5,
-        -3.363e-5,
-        9e-5,
-        -4.577e-5,
-        7e-5,
-        -1e-5
-      ],
-      "1mA": [
-        0.0001,
-        -0.000651,
-        0.0009,
-        -0.0001,
-        0.00045,
-        -0.0009
-      ],
-      "10mA": [
-        0.001,
-        -0.00553,
-        0.009,
-        -0.001,
-        0.0045,
-        -0.009
-      ]
+      "0": 100e-9,
+      "1": 100e-9,
+      "2": 1e-6,
+      "3": 1e-6,
+      "4": 10e-6,
+      "5": 100e-6,
+      "6": 1e-3,
+      "7": 10e-3
     },
     "time_set_keithley": 2.4,
     "time_get_data": 2
   },
   "i2": {
-    "channel_number": 2,
-    "units": "io/i2/adc/channel_1/units.json",
-    "keithley": "io/i2/calibration_manager/keithley/source_value/value.json",
-    "data": "io/i2/adc",
-    "range": [
-      "12pF",
-      "87pF",
-      "1000pF"
-    ],
-    "intergration_frequency": [
-      "2000Hz",
-      "1200Hz",
-      "1000Hz",
-      "800Hz",
-      "500Hz"
-    ],
-    "max_current_range": {
-      "12pF": {
-        "2000Hz": 100,
-        "1200Hz": 60,
-        "1000Hz": 50,
-        "800Hz": 40,
-        "500Hz": 25
-      },
-      "87pF": {
-        "2000Hz": 700,
-        "1200Hz": 420,
-        "1000Hz": 350,
-        "800Hz": 280,
-        "500Hz": 175
-      },
-      "1000pF": {
-        "2000Hz": 8000,
-        "1200Hz": 4800,
-        "1000Hz": 4000,
-        "800Hz": 3200,
-        "500Hz": 2000
-      }
-    },
-    "source_keithley": {
-      "12pF": {
-        "2000Hz": [
-          1e-8,
-          9e-8,
-          2.192e-8,
-          7.134e-8,
-          4.687e-8
-        ],
-        "1200Hz": [
-          1e-8,
-          5.4e-8,
-          2.789e-8,
-          1.347e-8,
-          5.26e-8
-        ],
-        "1000Hz": [
-          1e-8,
-          4.5e-8,
-          2.257e-8,
-          1.89e-8,
-          4.3823e-8
-        ],
-        "800Hz": [
-          1e-8,
-          3.6e-8,
-          1.817e-8,
-          3.3919e-8,
-          2.653e-8
-        ],
-        "500Hz": [
-          1e-8,
-          2.25e-8,
-          1.125e-8,
-          2.089e-8,
-          1.6e-8
-        ]
-      },
-      "87pF": {
-        "2000Hz": [
-          7e-8,
-          6.3e-7,
-          8.685e-8,
-          5.183e-7,
-          3.962e-7
-        ],
-        "1200Hz": [
-          4.2e-8,
-          3.78e-7,
-          9.379e-8,
-          1.8633e-7,
-          3.719e-7
-        ],
-        "1000Hz": [
-          3.5e-8,
-          3.15e-7,
-          7.888e-8,
-          3.017e-7,
-          1.6734e-7
-        ],
-        "800Hz": [
-          2.8e-8,
-          2.52e-7,
-          6.727e-8,
-          2.487e-7,
-          1.2638e-7
-        ],
-        "500Hz": [
-          1.75e-8,
-          1.575e-7,
-          4.4e-8,
-          1.5618e-7,
-          7.867e-8
-        ]
-      },
-      "1000pF": {
-        "2000Hz": [
-          8e-7,
-          7.2e-6,
-          1.0457e-6,
-          6.983e-6,
-          3.771e-6
-        ],
-        "1200Hz": [
-          4.8e-7,
-          4.32e-6,
-          9.9872e-7,
-          2.1673e-6,
-          4.3139e-6
-        ],
-        "1000Hz": [
-          4e-7,
-          3.6e-6,
-          9.7895e-7,
-          2.0327e-6,
-          3.5784e-6
-        ],
-        "800Hz": [
-          3.2e-7,
-          2.88e-6,
-          8.7315e-7,
-          1.5674e-6,
-          2.8776e-6
-        ],
-        "500Hz": [
-          2e-7,
-          1.8e-6,
-          3.3569e-7,
-          1.7915e-6,
-          1.0636e-6
-        ]
-      }
-    },
-    "time_set_keithley": 0.9,
-    "time_get_data": 0.9
+    "base": {
+      "channel_number": 2,
+      "units": "io/i2/adc/channel_1/units.json",
+      "keithley": "io/i2/calibration_manager/keithley/source_value/value.json",
+      "data": "io/i2/adc",
+      "range_path": "/io/i2/adc/range/value.json",
+      "max_current_range_path": "/io/i2/adc/maximum_current/value.json",
+      "range": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "select_channel": "io/i2/calibration_manager/utx_client/output_256_channel/value.json",
+      "time_set_keithley": 1.1,
+      "time_get_data": 1.1
+    }
   },
   "ix256-f2": {
     "base": {
@@ -310,6 +87,7 @@
       "keithley": "io/ix256/calibration_manager/keithley/source_value/value.json",
       "data": "io/ix256/adc",
       "range_path": "/io/ix256/adc/range/value.json",
+      "max_current_range_path": "/io/ix256/adc/maximum_current/value.json",
       "range": [
         0,
         1,
@@ -321,74 +99,6 @@
         7
       ],
       "select_channel": "io/ix256/calibration_manager/utx_client/output_256_channel/value.json",
-      "max_current_range": {
-        "0": 75,
-        "1": 300,
-        "2": 600,
-        "3": 900,
-        "4": 1200,
-        "5": 1500,
-        "6": 1800,
-        "7": 2100
-      },
-      "source_keithley": {
-        "0": [
-          1e-8,
-          6.48e-8,
-          1.91e-8,
-          6.4273e-8,
-          3.2655e-8
-        ],
-        "1": [
-          13.56e-8,
-          3e-8,
-          26.346e-8,
-          11.2695e-8,
-          27e-8
-        ],
-        "2": [
-          6e-8,
-          2.72e-7,
-          5.37e-7,
-          6.77e-8,
-          5.4e-7
-        ],
-        "3": [
-          9e-8,
-          3.93e-7,
-          1.89e-7,
-          1.01e-7,
-          8.1e-7
-        ],
-        "4": [
-          12e-8,
-          2.8425e-7,
-          10.692e-7,
-          5.7495e-7,
-          10.8e-7
-        ],
-        "5": [
-          1.5e-7,
-          6.72e-7,
-          1.33e-6,
-          1.671e-7,
-          1.35e-6
-        ],
-        "6": [
-          1.8e-7,
-          9.497e-7,
-          1.47e-6,
-          1.901e-7,
-          1.62e-6
-        ],
-        "7": [
-          2.1e-7,
-          8.951e-7,
-          1.71e-6,
-          2.156e-7,
-          1.89e-6
-        ]
-      },
       "time_set_keithley": 1.1,
       "time_get_data": 1.1
     },
@@ -454,6 +164,7 @@
       "keithley": "io/ix512/calibration_manager/keithley/source_value/value.json",
       "data": "io/ix512/adc",
       "range_path": "/io/ix512/adc/range/value.json",
+      "max_current_range_path": "/io/ix512/adc/maximum_current/value.json",
       "range": [
         0,
         1,
@@ -461,42 +172,6 @@
         3
       ],
       "select_channel": "io/ix512/calibration_manager/utx_client/output_256_channel/value.json",
-      "max_current_range": {
-        "0": 36,
-        "1": 150,
-        "2": 300,
-        "3": 450
-      },
-      "source_keithley": {
-        "0": [
-          3.60E-09,
-          1.08E-08,
-          1.80E-08,
-          2.52E-08,
-          3.24E-08
-        ],
-        "1": [
-          1.50E-08,
-          4.50E-08,
-          7.50E-08,
-          1.05E-07,
-          1.35E-07
-        ],
-        "2": [
-          3.00E-08,
-          9.00E-08,
-          1.50E-07,
-          2.10E-07,
-          2.70E-07
-        ],
-        "3": [
-          4.50E-08,
-          1.35E-07,
-          2.25E-07,
-          3.15E-07,
-          4.05E-07
-        ]
-      },
       "time_set_keithley": 1.1,
       "time_get_data": 1.1
     }
@@ -508,6 +183,7 @@
       "keithley": "io/i128_micro/calibration_manager/keithley/source_value/value.json",
       "data": "io/i128_micro/adc",
       "range_path": "/io/i128_micro/adc/range/value.json",
+      "max_current_range_path": "/io/i128_micro/adc/maximum_current/value.json",
       "range": [
         0,
         1,
@@ -519,74 +195,6 @@
         7
       ],
       "select_channel": "io/i128_micro/calibration_manager/utx_client/output_256_channel/value.json",
-      "max_current_range": {
-        "0": 75,
-        "1": 300,
-        "2": 600,
-        "3": 900,
-        "4": 1200,
-        "5": 1500,
-        "6": 1800,
-        "7": 2100
-      },
-      "source_keithley": {
-        "0": [
-          1e-8,
-          6.48e-8,
-          1.91e-8,
-          6.4273e-8,
-          3.2655e-8
-        ],
-        "1": [
-          13.56e-8,
-          3e-8,
-          26.346e-8,
-          11.2695e-8,
-          27e-8
-        ],
-        "2": [
-          6e-8,
-          2.72e-7,
-          5.37e-7,
-          6.77e-8,
-          5.4e-7
-        ],
-        "3": [
-          9e-8,
-          3.93e-7,
-          1.89e-7,
-          1.01e-7,
-          8.1e-7
-        ],
-        "4": [
-          12e-8,
-          2.8425e-7,
-          10.692e-7,
-          5.7495e-7,
-          10.8e-7
-        ],
-        "5": [
-          1.5e-7,
-          6.72e-7,
-          1.33e-6,
-          1.671e-7,
-          1.35e-6
-        ],
-        "6": [
-          1.8e-7,
-          9.497e-7,
-          1.47e-6,
-          1.901e-7,
-          1.62e-6
-        ],
-        "7": [
-          2.1e-7,
-          8.951e-7,
-          1.71e-6,
-          2.156e-7,
-          1.89e-6
-        ]
-      },
       "time_set_keithley": 1.1,
       "time_get_data": 1.1
     }

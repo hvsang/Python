@@ -9,10 +9,10 @@ def voltage_device(channel_number, total_samples, range_select, device_config):
     time_delay_keithley = device_config["time_set_keithley"]
     time_delay_get_data = device_config["time_get_data"]
 
-    if int(channel_number) > channel_size:
-        print("Over channel size")
-    else:
-        data = result(input_current, channel_number, total_samples,
-                      full_scale_range, time_delay_keithley, time_delay_get_data)
-        file_result = format_file(channel_number, data)
-        return file_result
+    if int(channel_number) not in channel_size:
+        print("Invalid channel")
+        return
+
+    data = result(input_current, channel_number, total_samples,
+                  full_scale_range, time_delay_keithley, time_delay_get_data)
+    format_file(channel_number, data, f"{range_select}")

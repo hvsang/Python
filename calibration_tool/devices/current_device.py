@@ -28,10 +28,11 @@ def current_device(channel_number="", total_samples=0, range_device=[], device_c
         input_current = compute_input(full_scale_range)
         full_scale_range = scale_full_range(range_selected, full_scale_range)
 
-        if int(channel_number) > channel_size:
-            print("Over channel size")
-        else:
-            print(f"Range {range_selected}, Channel {channel_number}:")
-            data = result(input_current, channel_number,
-                          total_samples, full_scale_range, time_delay_keithley, time_delay_get_data)
-            format_file(channel_number, data, f"{range_selected}")
+        if int(channel_number) not in channel_size:
+            print("Invalid channel")
+            return
+
+        print(f"Range {range_selected}, Channel {channel_number}:")
+        data = result(input_current, channel_number, total_samples,
+                      full_scale_range, time_delay_keithley, time_delay_get_data)
+        format_file(channel_number, data, f"{range_selected}")

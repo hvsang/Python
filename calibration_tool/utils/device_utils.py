@@ -38,10 +38,10 @@ def set_source_keithley(input_current=0.0, time_delay=0.1):
         return data
 
 
-# set_select_channel_number
 def set_channel_output(channel_number=0, time_delay=0.1):
     url = f"http://{ip}/{select_channel_path}"
     response = requests.put(url, str(channel_number))
+    time.sleep(time_delay)
     data = 0
     while response.status_code == 200 and data != channel_number:
         data = int(requests.get(url).text)

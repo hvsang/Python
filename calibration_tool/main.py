@@ -6,7 +6,6 @@ from devices.voltage_device import voltage_device
 from devices.field_device import field_device
 
 
-
 def main():
     device_name = get_device_name(ip)
     total_samples = 20
@@ -15,15 +14,18 @@ def main():
     if not is_device_valid(device_name, device_information):
         print("The device name incorrect")
         return
-    
+
     device_component_name = ""
     if device_name in ("ix512", "ix256-f2", "i128-micro", "i2"):
         device_component_name = "base"
 
-    # setup global context cho device_utils
-    units_path = get_path(device_information, device_name, device_component_name, "units")
-    keithley_path = get_path(device_information, device_name, device_component_name, "keithley")
-    data_path = get_path(device_information, device_name, device_component_name, "data")
+    # Setup global context for device_utils
+    units_path = get_path(device_information, device_name,
+                          device_component_name, "units")
+    keithley_path = get_path(
+        device_information, device_name, device_component_name, "keithley")
+    data_path = get_path(device_information, device_name,
+                         device_component_name, "data")
     select_channel_path = get_path(
         device_information, device_name, device_component_name, "select_channel")
     set_context(ip, units_path, keithley_path, data_path, select_channel_path)

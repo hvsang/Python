@@ -1,3 +1,6 @@
+import sys
+sys.dont_write_bytecode = True
+
 from config import ip, path
 from utils.device_utils import get_device_name, get_data_json, is_device_valid, get_path, set_context
 from devices.current_device import current_device

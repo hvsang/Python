@@ -30,7 +30,7 @@ def charge_device(total_samples, device_component_name, range_device, device_con
                                   full_scale_range, time_delay_keithley, time_delay_get_data)
                     format_file(channel, data, f"{range_selected}")
             else:
-                if int(channel_number) not in channel_size:
+                if int(channel_number) > channel_size:
                     print("Invalid channel")
                     return
 

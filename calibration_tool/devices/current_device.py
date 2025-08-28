@@ -28,7 +28,7 @@ def current_device(channel_number="", total_samples=0, range_device=[], device_c
         input_current = compute_input(full_scale_range)
         full_scale_range = scale_full_range(range_selected, full_scale_range)
 
-        if int(channel_number) not in channel_size:
+        if int(channel_number) > channel_size:
             print("Invalid channel")
             return
 

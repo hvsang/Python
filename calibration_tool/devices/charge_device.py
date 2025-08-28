@@ -6,8 +6,7 @@ from logic.main_logic import result
 from utils.device_utils import set_channel_output
 
 
-def charge_device(total_samples, device_component_name, range_device,
-                  device_config, ip, channel_number=None):
+def charge_device(total_samples, device_component_name, range_device, device_config, ip, channel_number=None):
     time_delay_keithley = device_config["time_set_keithley"]
     time_delay_get_data = device_config["time_get_data"]
 

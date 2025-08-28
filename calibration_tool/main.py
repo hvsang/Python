@@ -4,8 +4,6 @@ from devices.current_device import current_device
 from devices.charge_device import charge_device
 from devices.voltage_device import voltage_device
 from devices.field_device import field_device
-import sys
-sys.dont_write_bytecode = True
 
 
 

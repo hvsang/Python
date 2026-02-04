@@ -1,6 +1,8 @@
-import requests
-import time
+import os
+import sys
 import json
+import time
+import requests
 from .http_utils import http_get
 
 # --- Global context ---
@@ -65,11 +67,20 @@ def get_data_channel(channel_number, total_samples=1, time_delay_get_data=0.1):
     return Data
 
 
+def get_resource_path(filename):
+    if hasattr(sys, '_MEIPASS'):  # Run exe
+        base_path = sys._MEIPASS
+    else:  # Run script
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, filename)
+
+
 def get_data_json(path):
     try:
-        with open(path, "r", encoding="utf-8") as jsonfile:
-            data_json = json.load(jsonfile)
-        return data_json
+        json_path = get_resource_path(path)
+        with open(json_path, "r", encoding="utf-8") as f:
+            device_info = json.load(f)
+        return device_info
     except:
         return None
 

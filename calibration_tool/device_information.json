@@ -1,11 +1,20 @@
 {
   "f1": {
     "channel_number": 1,
-    "units": "io/f1/adc/channel_1/units.json",
+    "units": "io/f1/adc/user_units/value.json",
     "keithley": "io/f1/calibration_manager/keithley/source_value/value.json",
     "range_path": "/io/f1/adc/range/value.json",
     "data": "io/f1/adc",
-    "range": [0, 1, 2, 3, 4, 5, 6, 7],
+    "range": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
     "max_current_range": {
       "0": 100e-9,
       "1": 100e-9,
@@ -21,11 +30,20 @@
   },
   "fx4": {
     "channel_number": 4,
-    "units": "io/fx4/adc/channel_1/units.json",
+    "units": "io/fx4/adc/user_units/value.json",
     "keithley": "io/fx4/calibration_manager/keithley/source_value/value.json",
     "range_path": "/io/fx4/range/value.json",
     "data": "io/fx4/adc",
-    "range": [0, 1, 2, 3, 4, 5, 6, 7],
+    "range": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
     "max_current_range": {
       "0": 100e-9,
       "1": 100e-9,
@@ -47,7 +65,16 @@
       "data": "io/i2/adc",
       "range_path": "/io/i2/adc/range/value.json",
       "max_current_range_path": "/io/i2/adc/maximum_current/value.json",
-      "range": [0, 1, 2, 3, 4, 5, 6, 7],
+      "range": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
       "select_channel": "io/i2/calibration_manager/utx_client/output_256_channel/value.json",
       "time_set_keithley": 1.1,
       "time_get_data": 1.1
@@ -61,7 +88,16 @@
       "data": "io/ix256/adc",
       "range_path": "/io/ix256/adc/range/value.json",
       "max_current_range_path": "/io/ix256/adc/maximum_current/value.json",
-      "range": [0, 1, 2, 3, 4, 5, 6, 7],
+      "range": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
       "select_channel": "io/ix256/calibration_manager/utx_client/output_256_channel/value.json",
       "time_set_keithley": 1.1,
       "time_get_data": 1.1
@@ -71,7 +107,12 @@
       "units": "io/ix256/mezzanine/channel_1/units.json",
       "keithley": "io/ix256/calibration_manager/keithley/source_value/value.json",
       "data": "io/ix256/mezzanine",
-      "range": ["1µA", "10µA", "100µA", "1mA"],
+      "range": [
+        "1µA",
+        "10µA",
+        "100µA",
+        "1mA"
+      ],
       "max_current_range": {
         "1µA": 1,
         "10µA": 10,
@@ -124,7 +165,12 @@
       "data": "io/ix512/adc",
       "range_path": "/io/ix512/adc/range/value.json",
       "max_current_range_path": "/io/ix512/adc/maximum_current/value.json",
-      "range": [0, 1, 2, 3],
+      "range": [
+        0,
+        1,
+        2,
+        3
+      ],
       "select_channel": "io/ix512/calibration_manager/utx_client/output_256_channel/value.json",
       "time_set_keithley": 1.1,
       "time_get_data": 1.1
@@ -138,8 +184,33 @@
       "data": "io/i128_micro/adc",
       "range_path": "/io/i128_micro/adc/range/value.json",
       "max_current_range_path": "/io/i128_micro/adc/maximum_current/value.json",
-      "range": [0, 1, 2, 3, 4, 5, 6, 7],
+      "range": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
       "select_channel": "io/i128_micro/calibration_manager/utx_client/output_256_channel/value.json",
+      "time_set_keithley": 1.1,
+      "time_get_data": 1.1
+    }
+  },
+  "x3256": {
+    "base": {
+      "channel_number": 256,
+      "units": "io/x3256/adc/channel_2/units.json",
+      "keithley": "io/x3256/calibration_manager/keithley/source_value/value.json",
+      "data": "io/x3256/adc",
+      "range_path": "/io/x3256/adc/range/value.json",
+      "max_current_range_path": "/io/x3256/adc/maximum_current/value.json",
+      "range": [
+        0
+      ],
+      "select_channel": "io/x3256/calibration_manager/utx_client/output_256_channel/value.json",
       "time_set_keithley": 1.1,
       "time_get_data": 1.1
     }
@@ -149,7 +220,10 @@
     "units": "io/m1/adc/channel_1/units.json",
     "keithley": "io/m1/calibration/keithley/source_value/value.json",
     "data": "io/m1/adc",
-    "range": ["5V", "10V"],
+    "range": [
+      "5V",
+      "10V"
+    ],
     "max_current_range": {
       "5V": 5,
       "10V": 10
@@ -169,21 +243,41 @@
     "time_get_data": 0.9
   },
   "tx2": {
-    "channel_number": [1, 2, 3, 4, 5, 7],
+    "channel_number": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7
+    ],
     "units": "io/tx2/adc/channel_1/units.json",
     "keithley": "io/tx2/calibration_manager/keithley/source_value/value.json",
     "data": "io/tx2/adc",
-    "range": ["28kG", "7kG", "2.8kG", "700G"],
+    "range": [
+      "28kG",
+      "7kG",
+      "2.8kG",
+      "700G"
+    ],
     "max_current_range": 10,
     "time_set_keithley": 0.9,
     "time_get_data": 0.9
   },
   "t1": {
-    "channel_number": [1, 2],
+    "channel_number": [
+      1,
+      2
+    ],
     "units": "io/t1/adc/channel_1/units.json",
     "keithley": "io/t1/calibration_manager/keithley/source_value/value.json",
     "data": "io/t1/adc",
-    "range": ["28kG", "7kG", "2.8kG", "700G"],
+    "range": [
+      "28kG",
+      "7kG",
+      "2.8kG",
+      "700G"
+    ],
     "max_current_range": 10,
     "time_set_keithley": 1,
     "time_get_data": 0.9

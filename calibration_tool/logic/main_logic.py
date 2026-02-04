@@ -8,17 +8,31 @@ def column_name(channel_number, unit):
 
 
 def result(input_current, channel_number, total_samples, full_scale_range,
-           time_delay_keithley, time_delay_get_data, device_scale=1):
+           time_delay_keithley, time_delay_get_data, device_scale=1, auto_collect=True):
     data = []
     for i in input_current:
         print(i * device_scale)
         set_source_keithley(float(i) * device_scale, time_delay_keithley)
-        data_collect = get_data_channel(
-            channel_number, total_samples, time_delay_get_data)
-        dict = {column_name(channel_number, get_unit()): data_collect}
-        dict.update(check_relative_error(
-            full_scale_range, i, data_collect, get_unit()))
+        if not auto_collect:
+            ok = input("Enter 'ok': ")
+            while ok == 'ok':
+                data_collect = get_data_channel(
+                    channel_number, total_samples, time_delay_get_data)
+                dict = {column_name(channel_number, get_unit()): data_collect}
+                dict.update(check_relative_error(
+                    full_scale_range, i, data_collect, get_unit()))
 
-        df = pd.DataFrame(dict)
-        data.append(df)
+                df = pd.DataFrame(dict)
+                data.append(df)
+                ok = ""
+                break
+        else:
+            data_collect = get_data_channel(
+                channel_number, total_samples, time_delay_get_data)
+            dict = {column_name(channel_number, get_unit()): data_collect}
+            dict.update(check_relative_error(
+                full_scale_range, i, data_collect, get_unit()))
+
+            df = pd.DataFrame(dict)
+            data.append(df)
     return data

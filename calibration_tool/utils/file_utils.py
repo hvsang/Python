@@ -8,7 +8,7 @@ def ensure_dir(path):
     os.makedirs(path, exist_ok=True)
 
 
-def move_file(excel_path, target_dir, i, range_val):
+def move_file(excel_path, target_dir, channel, range_val):
     base_dir = os.path.join("Result", target_dir)
     sub_dir = f"range_{range_val}" if range_val else ""
     if sub_dir:
@@ -16,7 +16,7 @@ def move_file(excel_path, target_dir, i, range_val):
     else:
         ensure_dir(base_dir)
 
-    filename = f"channel_{i}({range_val}).xlsx"
+    filename = f"channel_{channel}(range_{range_val}).xlsx"
     destination_path = os.path.join(
         base_dir, sub_dir, filename) if sub_dir else os.path.join(base_dir, filename)
 
@@ -47,8 +47,8 @@ def format_file(i, data, range_val=""):
     else:
         ensure_dir(result_dir)
 
-    excel_path = os.path.join(result_dir, sub_dir, f"channel_{i}({range_val}).xlsx") if sub_dir else os.path.join(
-        result_dir, f"channel_{i}({range_val}).xlsx")
+    excel_path = os.path.join(result_dir, sub_dir, f"channel_{i}(range_{range_val}).xlsx") if sub_dir else os.path.join(
+        result_dir, f"channel_{i}(range_{range_val}).xlsx")
 
     with pd.ExcelWriter(excel_path, engine="xlsxwriter") as writer:
         for idx, df in enumerate(data, start=1):
